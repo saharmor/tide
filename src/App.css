@@ -1,0 +1,24 @@
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+}
+
+#root {
+    height: 100vh;
+    background-color: #f6f6ef;
+    display: flex;
+    flex-direction: row;
+}
+
+.btn-xlarge {
+    padding: 18px 28px;
+    font-size: 5rem;
+    line-height: normal;
+}
+
+.btn:focus {
+    box-shadow: none;
+  }
