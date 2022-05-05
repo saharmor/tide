@@ -1,0 +1,9 @@
+{
+  "short_name": "This Image Does Not Exist",
+  "name": "This Image Does Not Exist",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
