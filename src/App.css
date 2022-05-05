@@ -14,11 +14,11 @@ body {
 }
 
 .btn-xlarge {
-    padding: 18px 28px;
+
     font-size: 5rem;
     line-height: normal;
 }
 
 .btn:focus {
     box-shadow: none;
-  }
+}
