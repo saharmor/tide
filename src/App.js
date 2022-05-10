@@ -1,10 +1,18 @@
 import React, { useState } from "react"
 import "./App.css"
+// import Constants from "./consts.js"
 import NextImageTimer from "./NextImageTimer"
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
+import Image from 'react-bootstrap/Image'
+
+const Constants = {
+  imageSwitchDurationHumanSec: 3,
+  imageSwitchDurationAISec: 4,
+}
+
 
 const images = [
   {
@@ -35,23 +43,26 @@ const App = () => {
   const [score, setScore] = useState(0);
   const [currImgIdx, setCurrImgIdx] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
+  const [isMistake, setIsMistake] = useState(false);
+
+  const imageSwitchDuration = !isFinished() && images[currImgIdx]["is_human"] ? Constants.imageSwitchDurationHumanSec: Constants.imageSwitchDurationAISec
 
   function changeImage() {
     setIsTimerActive(true)
     return new Promise(res => setTimeout(function () {
       setCurrImgIdx(previousValue => ++previousValue)
+      setIsMistake(false)
       setIsTimerActive(false)
-    }, 3000)
+    }, imageSwitchDuration * 1000)
     );
   }
-
-
 
   async function handleClick(btnName) {
     if ((images[currImgIdx]["is_human"] && btnName === "human") || (!images[currImgIdx]["is_human"] && btnName === "robot")) {
       // correct
       setScore(previousValue => ++previousValue)
     } else {
+      setIsMistake(true)
       setScore(0)
     }
 
@@ -59,59 +70,58 @@ const App = () => {
   }
 
   function renderPostClick() {
-    if (!isTimerActive) {
-      return
-    }
-    if (!images[currImgIdx]["is_human"]) {
-      return (
-        <>
-          <span className="text-muted small">By {images[currImgIdx]["by"]}</span>
-          <span className="text-muted small">Prompt: {images[currImgIdx]["prompt"]}</span>
-          <NextImageTimer seconds={3} />
-        </>
-      )
-    } else {
-      return <>
+    return (
+      <Row className={`${isTimerActive ? "visible" : "invisible"} pt-2"`}>
         <span className="text-muted small">By {images[currImgIdx]["by"]}</span>
-        <NextImageTimer seconds={3} />
-      </>
-    }
+        {!images[currImgIdx]["is_human"] && <span className="text-muted small">Prompt: {images[currImgIdx]["prompt"]}</span>}
+        
+        {isTimerActive && <NextImageTimer seconds={imageSwitchDuration}/>}
+        {!isTimerActive && <h4>easter egg is back</h4>}
+      </Row>
+    )
+  }
+
+  function isFinished() {
+    return currImgIdx >= images.length
   }
 
   return (
     <Container className="text-center py-5" fluid="md">
       <Row>
-        <Col className="text-center"><h1 >This Image Does Not Exist</h1></Col>
+        <Col className="text-center"><h1>This Image Does Not Exist</h1></Col>
       </Row>
 
-      <Row className="py-2">
-        <Col className="text-center">
-          Score: <span>{score}</span>
-        </Col>
-      </Row>
-      {currImgIdx >= images.length && <Row className="justify-content-center">
-        Done!
+      {!isFinished() &&
+        <Row className="py-2">
+          <Col className="text-center">
+            <span className={`${isMistake ? "text-danger fw-bolder fs-4" : ""} ${isTimerActive && !isMistake ? "text-success" : ""}`}>Score: {score}</span>
+          </Col>
+        </Row>
+      }
+
+      {isFinished() && <Row className="justify-content-center">
+        Done! You score <h1 className="text-success">{score}</h1>
       </Row>
       }
-      {currImgIdx < images.length && <div>
-        <Row>
-          <Col className="text-center">
-            <img src={images[currImgIdx]["img"]} className="img-thumbnail shadow-2-strong" style={{ maxWidth: '24rem', maxHeight: '24em' }} alt="Generated art" />
+
+      {currImgIdx < images.length && <Container>
+        <Row className="justify-content-center">
+          <Col xs={12} md={6} lg={6} sm={4}>
+            <Image src={images[currImgIdx]["img"]} className="img-fluid rounded mx-auto d-block shadow" style={{height: '18rem'}} alt="Generated art"/>
           </Col>
         </Row>
 
-        <Row className="pt-2">
-          {renderPostClick()}
-        </Row>
-        <Row className="py-2">
+        <Row>
           <Col md={{ span: 6, offset: 3 }}>
-            <Row className="text-center">
-              <Col><Button className="btn-xlarge" variant="outlined" onClick={() => handleClick('robot')}><span role="img" aria-label="robot">🤖</span></Button></Col>
-              <Col><Button className="btn-xlarge" variant="outlined" onClick={() => handleClick('human')}><span role="img" aria-label="human">👩‍🎨</span></Button></Col>
+            <Row className="justify-content-center">
+              <Col><Button className="btn-xlarge" disabled={isTimerActive} variant="outlined" onClick={() => handleClick('robot')}><span role="img" aria-label="robot">🤖</span></Button></Col>
+              <Col><Button className="btn-xlarge" disabled={isTimerActive} variant="outlined" onClick={() => handleClick('human')}><span role="img" aria-label="human">👩‍🎨</span></Button></Col>
             </Row>
           </Col>
         </Row>
-      </div>
+
+        {renderPostClick()}
+      </Container>
       }
     </Container>
   );
