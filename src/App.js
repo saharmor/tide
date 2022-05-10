@@ -1,12 +1,13 @@
 import React, { useState } from "react"
 import "./App.css"
-// import Constants from "./consts.js"
 import NextImageTimer from "./NextImageTimer"
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Image from 'react-bootstrap/Image'
+import Toggle from 'react-toggle'
+import "react-toggle/style.css"
 
 const Constants = {
   imageSwitchDurationHumanSec: 3,
@@ -44,8 +45,20 @@ const App = () => {
   const [currImgIdx, setCurrImgIdx] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isMistake, setIsMistake] = useState(false);
+  const [isFastMode, setIsFastMode] = useState(false);
 
-  const imageSwitchDuration = !isFinished() && images[currImgIdx]["is_human"] ? Constants.imageSwitchDurationHumanSec: Constants.imageSwitchDurationAISec
+
+  function getImageSwitchDuration() {
+    if (isFinished()) {
+      return 0
+    }
+    var tempTimeout = images[currImgIdx]["is_human"] ? Constants.imageSwitchDurationHumanSec : Constants.imageSwitchDurationAISec
+    if (isFastMode) {
+      return Math.floor(tempTimeout / 2)
+    }
+    return tempTimeout
+  }
+    
 
   function changeImage() {
     setIsTimerActive(true)
@@ -53,7 +66,7 @@ const App = () => {
       setCurrImgIdx(previousValue => ++previousValue)
       setIsMistake(false)
       setIsTimerActive(false)
-    }, imageSwitchDuration * 1000)
+    }, getImageSwitchDuration() * 1000)
     );
   }
 
@@ -74,8 +87,8 @@ const App = () => {
       <Row className={`${isTimerActive ? "visible" : "invisible"} pt-2"`}>
         <span className="text-muted small">By {images[currImgIdx]["by"]}</span>
         {!images[currImgIdx]["is_human"] && <span className="text-muted small">Prompt: {images[currImgIdx]["prompt"]}</span>}
-        
-        {isTimerActive && <NextImageTimer seconds={imageSwitchDuration}/>}
+
+        {isTimerActive && <NextImageTimer seconds={getImageSwitchDuration()} />}
         {!isTimerActive && <h4>easter egg is back</h4>}
       </Row>
     )
@@ -83,6 +96,10 @@ const App = () => {
 
   function isFinished() {
     return currImgIdx >= images.length
+  }
+
+  function toggleFastMode() {
+    setIsFastMode(previousValue => !previousValue)
   }
 
   return (
@@ -99,6 +116,13 @@ const App = () => {
         </Row>
       }
 
+      <Row className="justify-content-center pb-2" xs={12} md={6} lg={6} sm={4}>
+        <Col lg={12}>
+          <span>Fast mode</span>
+          <Toggle id='cheese-status' defaultChecked={isFastMode} onChange={toggleFastMode} />
+        </Col>
+      </Row>
+
       {isFinished() && <Row className="justify-content-center">
         Done! You score <h1 className="text-success">{score}</h1>
       </Row>
@@ -107,7 +131,7 @@ const App = () => {
       {currImgIdx < images.length && <Container>
         <Row className="justify-content-center">
           <Col xs={12} md={6} lg={6} sm={4}>
-            <Image src={images[currImgIdx]["img"]} className="img-fluid rounded mx-auto d-block shadow" style={{height: '18rem'}} alt="Generated art"/>
+            <Image src={images[currImgIdx]["img"]} className="img-fluid rounded mx-auto d-block shadow" style={{ height: '18rem' }} alt="Generated art" />
           </Col>
         </Row>
 
