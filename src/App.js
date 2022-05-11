@@ -135,12 +135,13 @@ const App = () => {
         </Row>
 
         {!isFinished() &&
-        <Row className="pt-2 justify-content-center">
-          <Col>
-            <span className={`${isMistake ? "text-danger fw-bolder fs-4" : ""} ${isTimerActive && !isMistake ? "text-success" : ""}`}>Score: {score}</span>
-          </Col>
-        </Row>
-      }
+          <Row className="pt-2 justify-content-center">
+            <Col>
+              <span className={`${isMistake ? "text-danger fw-bolder fs-4" : ""} ${isTimerActive && !isMistake ? "text-success" : ""}`}>Score: {score}</span>
+            </Col>
+          </Row>
+        }
+        
         <Row className="justify-content-center">
           <Col lg={2} md={3} xs={4} sm={3}><Button className="btn-xlarge" disabled={isTimerActive} variant="outlined" onClick={() => handleClick('robot')}><span role="img" aria-label="robot">🤖</span></Button></Col>
           <Col lg={2} md={3} xs={4} sm={3}><Button className="btn-xlarge" disabled={isTimerActive} variant="outlined" onClick={() => handleClick('human')}><span role="img" aria-label="human">👩‍🎨</span></Button></Col>
