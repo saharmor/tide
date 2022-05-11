@@ -14,11 +14,25 @@ body {
 }
 
 .btn-xlarge {
-
-    font-size: 5rem;
+    font-size: 4rem;
     line-height: normal;
 }
 
 .btn:focus {
     box-shadow: none;
+}
+
+
+.react-toggle-track {
+    width: 40px !important;
+    height: 18px !important;
+}
+
+.react-toggle-thumb {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+    left: 24px !important;
 }
