@@ -107,9 +107,9 @@ const App = () => {
   }
 
   return (
-    <Container className="text-center py-5" fluid="md">
-      <Row className="pb-3">
-        <Col className="text-center"><h1>This Image Does Not Exist</h1></Col>
+    <Container className="text-center" fluid="md">
+      <Row className="py-3">
+        <Col className="text-center"><span className="fs-1">This Image Does Not Exist</span></Col>
       </Row>
 
       {!isFinished() &&
@@ -123,7 +123,7 @@ const App = () => {
 
 
       {isFinished() && <Row className="justify-content-center">
-        Done! You score <h1 className="text-success">{score}</h1>
+        Done! Your score <h1 className="text-success">{score}</h1>
       </Row>
       }
 
@@ -141,7 +141,7 @@ const App = () => {
             </Col>
           </Row>
         }
-        
+
         <Row className="justify-content-center">
           <Col lg={2} md={3} xs={4} sm={3}><Button className="btn-xlarge" disabled={isTimerActive} variant="outlined" onClick={() => handleClick('robot')}><span role="img" aria-label="robot">🤖</span></Button></Col>
           <Col lg={2} md={3} xs={4} sm={3}><Button className="btn-xlarge" disabled={isTimerActive} variant="outlined" onClick={() => handleClick('human')}><span role="img" aria-label="human">👩‍🎨</span></Button></Col>
@@ -149,6 +149,9 @@ const App = () => {
         {renderPostClick()}
       </Container>
       }
+      <Row className="my-5">
+        <p className="a-no-decoration"><a href="#">Made to increase awenesss</a></p>
+      </Row>
     </Container>
   );
 }
