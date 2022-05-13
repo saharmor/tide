@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/tide/static/css/main.2e3590dd.chunk.css",
+    "main.js": "/tide/static/js/main.451968d6.chunk.js",
+    "main.js.map": "/tide/static/js/main.451968d6.chunk.js.map",
+    "runtime-main.js": "/tide/static/js/runtime-main.75137512.js",
+    "runtime-main.js.map": "/tide/static/js/runtime-main.75137512.js.map",
+    "static/css/2.570db688.chunk.css": "/tide/static/css/2.570db688.chunk.css",
+    "static/js/2.f1e48301.chunk.js": "/tide/static/js/2.f1e48301.chunk.js",
+    "static/js/2.f1e48301.chunk.js.map": "/tide/static/js/2.f1e48301.chunk.js.map",
+    "index.html": "/tide/index.html",
+    "precache-manifest.0f3e4dd1869d9aa03425307e39ec1963.js": "/tide/precache-manifest.0f3e4dd1869d9aa03425307e39ec1963.js",
+    "service-worker.js": "/tide/service-worker.js",
+    "static/css/2.570db688.chunk.css.map": "/tide/static/css/2.570db688.chunk.css.map",
+    "static/css/main.2e3590dd.chunk.css.map": "/tide/static/css/main.2e3590dd.chunk.css.map",
+    "static/js/2.f1e48301.chunk.js.LICENSE.txt": "/tide/static/js/2.f1e48301.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.75137512.js",
+    "static/css/2.570db688.chunk.css",
+    "static/js/2.f1e48301.chunk.js",
+    "static/css/main.2e3590dd.chunk.css",
+    "static/js/main.451968d6.chunk.js"
+  ]
+}
