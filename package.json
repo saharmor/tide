@@ -15,6 +15,7 @@
     "react-bootstrap": "^2.3.1",
     "react-dom": "^18.1.0",
     "react-scripts": "^3.4.1",
+    "react-share": "^4.4.0",
     "react-toggle": "^4.1.2"
   },
   "scripts": {
