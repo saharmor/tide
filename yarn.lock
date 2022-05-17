@@ -4133,6 +4133,11 @@ depd@~1.1.2:
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
 
+deploy@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/deploy/-/deploy-1.0.3.tgz#ab846f5e228610054556d9b73df0b2f45af84fb0"
+  integrity sha1-q4RvXiKGEAVFVtm3PfCy9Fr4T7A=
+
 dequal@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.2.tgz#85ca22025e3a87e65ef75a7a437b35284a7e319d"
