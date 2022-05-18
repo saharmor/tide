@@ -9,41 +9,14 @@ import Image from 'react-bootstrap/Image'
 import Toggle from 'react-toggle'
 import "react-toggle/style.css"
 import SocialShare from "./SocialShare"
+import imagesTest from "./images.json"
 
 const Constants = {
   imageSwitchDurationHumanSec: 3,
   imageSwitchDurationAISec: 4,
 }
 
-
-const images = [
-  {
-    img: 'https://pbs.twimg.com/media/FRm3uewVIAAcHGO?format=jpg&name=medium',
-    is_human: false,
-    prompt: 'cats singing',
-    by: '@bakztfuture with DALL-E 2',
-    url: 'https://www.saharmor.me',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1648737966670-a6a53917ed19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80',
-    is_human: true,
-    by: '@jgrishey on Unsplash',
-    url: 'https://www.saharmor.me',
-  },
-  {
-    img: 'https://pbs.twimg.com/media/FRwqFOpUUAEUMZq?format=jpg&name=medium',
-    is_human: false,
-    prompt: 'avocado armchair',
-    by: '@bakztfuture with DALL-E 2',
-    url: 'https://www.saharmor.me',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1651454060241-a218f790be13?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2342&q=80',
-    is_human: true,
-    by: '@mattxfotographs on Unsplash',
-    url: 'https://www.saharmor.me',
-  }
-].sort(() => Math.random() - 0.5)
+const images = imagesTest.sort(() => Math.random() - 0.5)
 
 const App = () => {
   const [score, setScore] = useState(0);
@@ -51,6 +24,7 @@ const App = () => {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [isFastMode, setIsFastMode] = useState(false);
+  const [isDalle, setIsDalle] = useState(false);
 
 
   function getImageSwitchDuration() {
@@ -68,6 +42,7 @@ const App = () => {
   function changeImage() {
     setIsTimerActive(true)
     return new Promise(res => setTimeout(function () {
+      setIsDalle(false)
       setCurrImgIdx(previousValue => ++previousValue)
       setIsCorrect(false)
       setIsTimerActive(false)
@@ -84,17 +59,33 @@ const App = () => {
       // correct
       setScore(previousValue => ++previousValue)
       setIsCorrect(true)
-    } 
+    }
+    if (images[currImgIdx]["on"] === "DALL-E 2"){
+      setIsDalle(true)
+    }
     
     await changeImage()
   }
 
+  function getImageByText(){
+    if (images[currImgIdx]["is_human"]){
+      return images[currImgIdx]["by"] + " on " + images[currImgIdx]["on"]
+    }
+    return images[currImgIdx]["by"] + " with " + images[currImgIdx]["on"]
+  }
+
+  function getImagePath(){
+    if (!isDalle){
+      return "images/" + images[currImgIdx]["img"] + ".jpeg"
+    }
+    return "images/original/" + images[currImgIdx]["img"] + ".jpeg"
+  }
+  
   function renderPostClick() {
     return (
       <Row className={`${isTimerActive ? "visible" : "invisible"} pt-2"`}>
-        <span className="text-muted small">By <a href={images[currImgIdx]['url']} target="_blank" rel="noopener noreferrer">{images[currImgIdx]["by"]}</a></span>
+        <span className="text-muted small">By <a href={images[currImgIdx]['url']} target="_blank" rel="noopener noreferrer">{getImageByText()}</a></span>
         {!images[currImgIdx]["is_human"] && <span className="text-muted small">Prompt: {images[currImgIdx]["prompt"]}</span>}
-
         {isTimerActive && <NextImageTimer seconds={getImageSwitchDuration()} />}
         {!isTimerActive && <h4>easter egg is back</h4>}
       </Row>
@@ -139,7 +130,8 @@ const App = () => {
       {!isFinished() && <Container>
         <Row className="justify-content-center">
           <Col>
-            <Image src={images[currImgIdx]["img"]} className="img-fluid rounded mx-auto d-block shadow" style={{ height: '18rem' }} alt="Generated art" />
+            <Image src={getImagePath(isDalle)} className="img-fluid rounded mx-auto d-block shadow" style={{ height: '18rem' }} alt="Generated art" />
+            {/* <Image src={images[currImgIdx]["img"]} className="img-fluid rounded mx-auto d-block shadow" style={{ height: '18rem' }} alt="Generated art" /> */}
           </Col>
         </Row>
 
