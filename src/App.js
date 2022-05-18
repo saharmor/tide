@@ -130,8 +130,7 @@ const App = () => {
       {!isFinished() && <Container>
         <Row className="justify-content-center">
           <Col>
-            <Image src={getImagePath(isDalle)} className="img-fluid rounded mx-auto d-block shadow" style={{ height: '18rem' }} alt="Generated art" />
-            {/* <Image src={images[currImgIdx]["img"]} className="img-fluid rounded mx-auto d-block shadow" style={{ height: '18rem' }} alt="Generated art" /> */}
+            <Image src={getImagePath(isDalle)} className="img-fluid img-rounded mx-auto d-block shadow" style={{ height: '18rem', borderRadius:"0.5rem" }} alt="Generated art" />
           </Col>
         </Row>
 
