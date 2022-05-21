@@ -15,10 +15,10 @@ import imagesTest from "./images.json"
 const Constants = {
   imageSwitchDurationHumanSec: 3,
   imageSwitchDurationAISec: 4,
-  imagesPerBatch: 2,
+  imagesPerBatch: 20,
 }
 
-const images = imagesTest.slice(0,5).sort(() => Math.random() - 0.5)
+const images = imagesTest.sort(() => Math.random() - 0.5)
 
 const App = () => {
   const [score, setScore] = useState(0);
