@@ -5,7 +5,7 @@ import {FacebookShareButton, RedditShareButton, TwitterShareButton, TwitterIcon,
 const SocialShare = ({ url, title }) => {
     return (
         <span>
-        <TwitterShareButton url={url} title={title}>
+        <TwitterShareButton url={url} title={title + " #dalle"}>
           <TwitterIcon size={24} round />
         </TwitterShareButton>
         &nbsp;

@@ -1,31 +1,32 @@
 import React, { useState } from "react"
 import "./App.css"
-import NextImageTimer from "./NextImageTimer"
+import imagesJson from "./images.json"
 import Footer from "./Footer"
+import SocialShare from "./SocialShare"
+import GameActions from "./GameActions"
+
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Image from 'react-bootstrap/Image'
-import Toggle from 'react-toggle'
-import "react-toggle/style.css"
-import SocialShare from "./SocialShare"
-import imagesTest from "./images.json"
+
 
 const Constants = {
-  imageSwitchDurationHumanSec: 3,
-  imageSwitchDurationAISec: 4,
-  imagesPerBatch: 20,
+  imageSwitchDurationHumanSec: 2,
+  imageSwitchDurationAISec: 2,
+  // imageSwitchDurationHumanSec: 1,
+  // imageSwitchDurationAISec: 1,
+  imagesPerBatch: 5,
 }
 
-const images = imagesTest.sort(() => Math.random() - 0.5)
+const images = imagesJson.slice(0, 40).sort(() => Math.random() - 0.5)
 
 const App = () => {
   const [score, setScore] = useState(0);
   const [currImgIdx, setCurrImgIdx] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [isFastMode, setIsFastMode] = useState(true);
   const [isDalle, setIsDalle] = useState(false);
   const [isBatchFinished, setIsBatchFinished] = useState(false);
 
@@ -35,15 +36,10 @@ const App = () => {
       return 0
     }
 
-    var tempTimeout = images[currImgIdx]["is_human"] ? Constants.imageSwitchDurationHumanSec : Constants.imageSwitchDurationAISec
-    if (isFastMode) {
-      return Math.floor(tempTimeout / 2)
-    }
-    return tempTimeout
+    return images[currImgIdx]["is_human"] ? Constants.imageSwitchDurationHumanSec : Constants.imageSwitchDurationAISec
   }
 
-
-  function isBatchOver(){
+  function isBatchOver() {
     return (currImgIdx + 1) % Constants.imagesPerBatch === 0
   }
 
@@ -54,7 +50,7 @@ const App = () => {
       setIsDalle(false)
       if (!isBatchOver()) {
         setCurrImgIdx(previousValue => ++previousValue)
-      } else{
+      } else {
         setIsBatchFinished(true)
       }
       setIsCorrect(false)
@@ -72,7 +68,10 @@ const App = () => {
       // correct
       setScore(previousValue => ++previousValue)
       setIsCorrect(true)
+    } else {
+      setIsCorrect(false)
     }
+
     if (images[currImgIdx]["on"] === "DALL-E 2") {
       setIsDalle(true)
     }
@@ -99,29 +98,32 @@ const App = () => {
       <Row className={`${isTimerActive ? "visible" : "invisible"} pt-2"`}>
         <span className="text-muted small">By <a href={images[currImgIdx]['url']} target="_blank" rel="noopener noreferrer">{getImageByText()}</a></span>
         {!images[currImgIdx]["is_human"] && <span className="text-muted small">Prompt: {images[currImgIdx]["prompt"]}</span>}
-        {isTimerActive && <NextImageTimer seconds={getImageSwitchDuration()} />}
         {!isTimerActive && <h4>easter egg is back</h4>}
       </Row>
     )
   }
 
-  function playAgain(){
+  function playAgain() {
     setCurrImgIdx(previousValue => ++previousValue)
     setIsBatchFinished(false)
     setScore(0)
   }
 
-
-  function isFinishedAll(){
+  function isFinishedAll() {
     return currImgIdx >= images.length || (isBatchFinished && currImgIdx === images.length - 1)
   }
 
-  function isBetweenStates(){
+  function isBetweenStates() {
     return isBatchFinished || isFinishedAll()
   }
 
-  function toggleFastMode() {
-    setIsFastMode(previousValue => !previousValue)
+  function getImagesLeftCount() {
+    // check if last batch
+    if (images.length - currImgIdx < Constants.imagesPerBatch) {
+      return images.length % Constants.imagesPerBatch
+    }
+
+    return Constants.imagesPerBatch
   }
 
   return (
@@ -147,8 +149,7 @@ const App = () => {
       {!isBetweenStates() &&
         <Row className="justify-content-center align-items-center pb-2 py-4" xs={12} md={6} lg={6} sm={4}>
           <Col>
-            <span className="small pe-2">Fast mode</span>
-            <Toggle id='fast-mode' defaultChecked={isFastMode} onChange={toggleFastMode} />
+            <span className="small pe-2">{currImgIdx % Constants.imagesPerBatch + 1}/{getImagesLeftCount()}</span>
           </Col>
         </Row>
       }
@@ -166,15 +167,12 @@ const App = () => {
           </Col>
         </Row>
 
-        <Row className="justify-content-center">
-          <Col lg={2} md={3} xs={4} sm={3}><Button className="btn-xlarge" disabled={isTimerActive && images[currImgIdx]["is_human"]} variant="outlined" onClick={() => handleClick('robot')}><span role="img" aria-label="robot">🤖</span></Button></Col>
-          <Col lg={2} md={3} xs={4} sm={3}><Button className="btn-xlarge" disabled={isTimerActive && !images[currImgIdx]["is_human"]} variant="outlined" onClick={() => handleClick('human')}><span role="img" aria-label="human">👩‍🎨</span></Button></Col>
-        </Row>
+        <GameActions handleClick={handleClick} isTimerActive={isTimerActive} isCorrect={isCorrect} />
         {renderPostClick()}
       </Container>
       }
-      
-      <Footer/>
+
+      <Footer />
     </Container>
   );
 }
