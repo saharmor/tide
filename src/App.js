@@ -17,7 +17,7 @@ const Constants = {
   imageSwitchDurationAISec: 2,
   // imageSwitchDurationHumanSec: 1,
   // imageSwitchDurationAISec: 1,
-  imagesPerBatch: 20,
+  imagesPerBatch: 30,
 }
 
 const images = imagesJson.sort(() => Math.random() - 0.5)
