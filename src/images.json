@@ -665,10 +665,10 @@
     },
     {
       "img": 84,
-      "is_human": false,
-      "prompt": "A flying rabbit grubicorn inside a rainbow drawn in the style of a six-year-old with a mean dad",
+      "is_human": true,
+      "prompt": "",
       "by": "@2020cv_inc",
-      "on": "DALL-E 2",
+      "on": "Twitter",
       "url": "https://twitter.com/2020cv_inc/status/1524498810126307328/photo/1"
     },
     {
