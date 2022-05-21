@@ -17,10 +17,10 @@ const Constants = {
   imageSwitchDurationAISec: 2,
   // imageSwitchDurationHumanSec: 1,
   // imageSwitchDurationAISec: 1,
-  imagesPerBatch: 5,
+  imagesPerBatch: 20,
 }
 
-const images = imagesJson.slice(0, 40).sort(() => Math.random() - 0.5)
+const images = imagesJson.sort(() => Math.random() - 0.5)
 
 const App = () => {
   const [score, setScore] = useState(0);
