@@ -95,10 +95,9 @@ const App = () => {
 
   function renderPostClick() {
     return (
-      <Row className={`${isTimerActive ? "visible" : "invisible"} pt-2"`}>
+      <Row className={`pt-2" fs-4 prompt-height`}>
         <span className="text-muted small">By <a href={images[currImgIdx]['url']} target="_blank" rel="noopener noreferrer">{getImageByText()}</a></span>
-        {!images[currImgIdx]["is_human"] && <span className="text-muted small">Prompt: {images[currImgIdx]["prompt"]}</span>}
-        {!isTimerActive && <h4>easter egg is back</h4>}
+        {!images[currImgIdx]["is_human"] && <span className="text-muted small">Instruction: {images[currImgIdx]["prompt"]}</span>}
       </Row>
     )
   }
@@ -163,12 +162,12 @@ const App = () => {
 
         <Row className="pt-2 justify-content-center">
           <Col>
-            <span className={`${isCorrect ? "text-success fw-bolder fs-4" : ""}`}>Score: {score}</span>
+            <span className={`${isCorrect ? "text-success fw-bolder fs-3" : "fs-5"}`}>Score: {score}</span>
           </Col>
         </Row>
 
         <GameActions handleClick={handleClick} isTimerActive={isTimerActive} isCorrect={isCorrect} />
-        {renderPostClick()}
+        {isTimerActive && renderPostClick()}
       </Container>
       }
 

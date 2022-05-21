@@ -5,7 +5,7 @@ import Row from 'react-bootstrap/Row'
 const Footer = () => {
     return (
         <Container>
-            <Row className="mt-3 justify-content-center text-center">
+            <Row className="mt-5 justify-content-center text-center">
                 <hr className="hr"></hr>
             </Row>
             <Row>
