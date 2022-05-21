@@ -11,6 +11,7 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Image from 'react-bootstrap/Image'
 
+import { v4 as uuidv4 } from 'uuid';
 
 const Constants = {
   imageSwitchDurationHumanSec: 2,
@@ -18,9 +19,11 @@ const Constants = {
   // imageSwitchDurationHumanSec: 1,
   // imageSwitchDurationAISec: 1,
   imagesPerBatch: 30,
+  remoteLmbda: 'https://7tknlfte8j.execute-api.us-west-1.amazonaws.com',
 }
 
 const images = imagesJson.sort(() => Math.random() - 0.5)
+const sessionId = uuidv4()
 
 const App = () => {
   const [score, setScore] = useState(0);
@@ -29,7 +32,6 @@ const App = () => {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isDalle, setIsDalle] = useState(false);
   const [isBatchFinished, setIsBatchFinished] = useState(false);
-
 
   function getImageSwitchDuration() {
     if (isBetweenStates()) {
@@ -59,6 +61,22 @@ const App = () => {
     );
   }
 
+  async function saveDB() {
+    const params = {
+      "imageId": images[currImgIdx]["id"],
+      "runningNum": images[currImgIdx]["running_num"],
+      "url": images[currImgIdx]["url"],
+      "isHuman": images[currImgIdx]["is_human"],
+      "isCorrect": isCorrect,
+      "sessionId": sessionId,
+    }
+
+    await fetch(Constants.remoteLmbda, { // TODO handle errors
+      method: 'POST',
+      body: JSON.stringify(params),
+    })
+  }
+
   async function handleClick(btnName) {
     if (isTimerActive) {
       return
@@ -75,7 +93,7 @@ const App = () => {
     if (images[currImgIdx]["on"] === "DALL-E 2") {
       setIsDalle(true)
     }
-
+    await saveDB()
     await changeImage()
   }
 
@@ -88,9 +106,9 @@ const App = () => {
 
   function getImagePath() {
     if (!isDalle) {
-      return "images/" + images[currImgIdx]["img"] + ".jpeg"
+      return "images/" + images[currImgIdx]["running_num"] + ".jpeg"
     }
-    return "images/original/" + images[currImgIdx]["img"] + ".jpeg"
+    return "images/original/" + images[currImgIdx]["running_num"] + ".jpeg"
   }
 
   function renderPostClick() {
