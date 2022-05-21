@@ -148,7 +148,7 @@ const App = () => {
       {!isBetweenStates() &&
         <Row className="justify-content-center align-items-center pb-2 py-4" xs={12} md={6} lg={6} sm={4}>
           <Col>
-            <span className="small pe-2">{currImgIdx % Constants.imagesPerBatch + 1}/{getImagesLeftCount()}</span>
+            <span className="small">{currImgIdx % Constants.imagesPerBatch + 1}/{getImagesLeftCount()}</span>
           </Col>
         </Row>
       }
