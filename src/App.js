@@ -11,7 +11,8 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Image from 'react-bootstrap/Image'
 
-import { v4 as uuidv4 } from 'uuid';
+
+import { v4 as uuidv4 } from 'uuid'
 
 const Constants = {
   imageSwitchDurationHumanSec: 2,
@@ -19,16 +20,23 @@ const Constants = {
   imagesPerBatch: 30,
   remoteLmbda: 'https://7tknlfte8j.execute-api.us-west-1.amazonaws.com',
 }
+const humanImages = imagesJson.filter((item) => item.is_human).sort(() => Math.random() - 0.5)
+const machineImages = imagesJson.filter((item) => !item.is_human).sort(() => Math.random() - 0.5)
+const totalImgCount = humanImages.length + machineImages.length
 
-const images = imagesJson.sort(() => Math.random() - 0.5)
 const sessionId = uuidv4()
 
 const App = () => {
   const [score, setScore] = useState(0);
-  const [currImgIdx, setCurrImgIdx] = useState(0);
+  const [doneImgsCount, setDoneImgsCount] = useState(0);
+  const [currHumanIdx, setCurrHumanIdx] = useState(0);
+  const [currMachineIdx, setCurrMachineIdx] = useState(1);
+
+  const [currImg, setCurrImg] = useState(machineImages[0]);
+  const [isDalle, setIsDalle] = useState(false);
+
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [isDalle, setIsDalle] = useState(false);
   const [isBatchFinished, setIsBatchFinished] = useState(false);
 
   function getImageSwitchDuration() {
@@ -36,24 +44,37 @@ const App = () => {
       return 0
     }
 
-    return images[currImgIdx]["is_human"] ? Constants.imageSwitchDurationHumanSec : Constants.imageSwitchDurationAISec
+    return currImg["is_human"] ? Constants.imageSwitchDurationHumanSec : Constants.imageSwitchDurationAISec
   }
 
   function isBatchOver() {
-    return (currImgIdx + 1) % Constants.imagesPerBatch === 0
+    return doneImgsCount !== 0 && ((doneImgsCount + 1) % Constants.imagesPerBatch === 0)
   }
 
-  function getNextImageIndex() {
-    return currImgIdx + 1
+  function moveNextImage(){
+    setCurrImg(getNextImage())
+  }
+  
+  function getNextImage() {
+    const randomResult = Math.random() < 0.5    
+    if (currMachineIdx < machineImages.length && ((currHumanIdx === humanImages.length - 1) || randomResult)){ 
+      setCurrMachineIdx(previousValue => ++previousValue)
+      return machineImages[currMachineIdx]
+    } else{
+      setCurrHumanIdx(previousValue => ++previousValue)
+      return humanImages[currHumanIdx]
+    }
   }
 
   function changeImage() {
     setIsTimerActive(true)
     setIsBatchFinished(false)
+    
     return new Promise(res => setTimeout(function () {
       setIsDalle(false)
+      setDoneImgsCount(previousValue => ++previousValue)
       if (!isBatchOver()) {
-        setCurrImgIdx(getNextImageIndex())
+        moveNextImage()
       } else {
         setIsBatchFinished(true)
       }
@@ -65,10 +86,10 @@ const App = () => {
 
   async function saveDB() {
     const params = {
-      "imageId": images[currImgIdx]["id"],
-      "runningNum": images[currImgIdx]["running_num"],
-      "url": images[currImgIdx]["url"],
-      "isHuman": images[currImgIdx]["is_human"],
+      "imageId": currImg["id"],
+      "runningNum": currImg["running_num"],
+      "url": currImg["url"],
+      "isHuman": currImg["is_human"],
       "isCorrect": isCorrect,
       "sessionId": sessionId,
     }
@@ -84,7 +105,7 @@ const App = () => {
       return
     }
 
-    if ((images[currImgIdx]["is_human"] && btnName === "human") || (!images[currImgIdx]["is_human"] && btnName === "robot")) {
+    if ((currImg["is_human"] && btnName === "human") || (!currImg["is_human"] && btnName === "robot")) {
       // correct
       setScore(previousValue => ++previousValue)
       setIsCorrect(true)
@@ -92,7 +113,7 @@ const App = () => {
       setIsCorrect(false)
     }
 
-    if (images[currImgIdx]["on"] === "DALL-E 2") {
+    if (currImg["on"] === "DALL-E 2") {
       setIsDalle(true)
     }
     await changeImage()
@@ -100,36 +121,36 @@ const App = () => {
   }
 
   function getImageByText() {
-    if (images[currImgIdx]["is_human"]) {
-      return images[currImgIdx]["by"] + " on " + images[currImgIdx]["on"]
+    if (currImg["is_human"]) {
+      return currImg["by"] + " on " + currImg["on"]
     }
-    return images[currImgIdx]["by"] + " with " + images[currImgIdx]["on"]
+    return currImg["by"] + " with " + currImg["on"]
   }
 
   function getImagePath() {
     if (!isDalle) {
-      return "images/" + images[currImgIdx]["running_num"] + ".jpeg"
+      return "images/" + currImg["running_num"] + ".jpeg"
     }
-    return "images/original/" + images[currImgIdx]["running_num"] + ".jpeg"
+    return "images/original/" + currImg["running_num"] + ".jpeg"
   }
 
   function renderPostClick() {
     return (
       <Row className={`pt-2" fs-4 prompt-height`}>
-        <span className="text-muted small">By <a href={images[currImgIdx]['url']} target="_blank" rel="noopener noreferrer">{getImageByText()}</a></span>
-        {!images[currImgIdx]["is_human"] && <span className="text-muted small">Instruction: {images[currImgIdx]["prompt"]}</span>}
+        <span className="text-muted small">By <a href={currImg['url']} target="_blank" rel="noopener noreferrer">{getImageByText()}</a></span>
+        {!currImg["is_human"] && <span className="text-muted small">Instruction: {currImg["prompt"]}</span>}
       </Row>
     )
   }
 
   function playAgain() {
-    setCurrImgIdx(getNextImageIndex())
+    moveNextImage()
     setIsBatchFinished(false)
     setScore(0)
   }
 
   function isFinishedAll() {
-    return currImgIdx >= images.length || (isBatchFinished && currImgIdx === images.length - 1)
+    return doneImgsCount === totalImgCount
   }
 
   function isBetweenStates() {
@@ -138,12 +159,13 @@ const App = () => {
 
   function getImagesLeftCount() {
     // check if last batch
-    if (images.length - currImgIdx < Constants.imagesPerBatch) {
-      return images.length % Constants.imagesPerBatch
+    if ( (totalImgCount - doneImgsCount < Constants.imagesPerBatch) && (totalImgCount % Constants.imagesPerBatch !== 0) ){
+      return totalImgCount % Constants.imagesPerBatch
     }
 
     return Constants.imagesPerBatch
   }
+
 
   return (
     <Container className="text-center justify-content-center align-items-center" fluid="md">
@@ -168,7 +190,7 @@ const App = () => {
       {!isBetweenStates() &&
         <Row className="justify-content-center align-items-center pb-2 py-4" xs={12} md={6} lg={6} sm={4}>
           <Col>
-            <span className="small">{currImgIdx % Constants.imagesPerBatch + 1}/{getImagesLeftCount()}</span>
+            <span className="small">{doneImgsCount % Constants.imagesPerBatch + 1}/{getImagesLeftCount()}</span>
           </Col>
         </Row>
       }
