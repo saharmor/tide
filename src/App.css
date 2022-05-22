@@ -34,16 +34,6 @@ a {
     width: 30%;
 }
 
-.react-toggle-track {
-    width: 40px !important;
-    height: 18px !important;
-}
-
-.react-toggle-thumb {
-    width: 16px !important;
-    height: 16px !important;
-}
-
-.react-toggle--checked .react-toggle-thumb {
-    left: 24px !important;
+.prompt-height {
+    min-height: calc(1.5em + 0.75rem + 2px);
 }

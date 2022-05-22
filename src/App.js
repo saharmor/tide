@@ -16,8 +16,6 @@ import { v4 as uuidv4 } from 'uuid';
 const Constants = {
   imageSwitchDurationHumanSec: 2,
   imageSwitchDurationAISec: 2,
-  // imageSwitchDurationHumanSec: 1,
-  // imageSwitchDurationAISec: 1,
   imagesPerBatch: 30,
   remoteLmbda: 'https://7tknlfte8j.execute-api.us-west-1.amazonaws.com',
 }
@@ -45,13 +43,17 @@ const App = () => {
     return (currImgIdx + 1) % Constants.imagesPerBatch === 0
   }
 
+  function getNextImageIndex(){
+      return currImgIdx + 1
+  }
+
   function changeImage() {
     setIsTimerActive(true)
     setIsBatchFinished(false)
     return new Promise(res => setTimeout(function () {
       setIsDalle(false)
       if (!isBatchOver()) {
-        setCurrImgIdx(previousValue => ++previousValue)
+        setCurrImgIdx(getNextImageIndex())
       } else {
         setIsBatchFinished(true)
       }
@@ -93,8 +95,8 @@ const App = () => {
     if (images[currImgIdx]["on"] === "DALL-E 2") {
       setIsDalle(true)
     }
-    await saveDB()
     await changeImage()
+    await saveDB()
   }
 
   function getImageByText() {
@@ -121,7 +123,7 @@ const App = () => {
   }
 
   function playAgain() {
-    setCurrImgIdx(previousValue => ++previousValue)
+    setCurrImgIdx(getNextImageIndex())
     setIsBatchFinished(false)
     setScore(0)
   }
