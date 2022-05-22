@@ -18,7 +18,7 @@ const Constants = {
   imageSwitchDurationAISec: 2,
   // imageSwitchDurationHumanSec: 1,
   // imageSwitchDurationAISec: 1,
-  imagesPerBatch: 1,
+  imagesPerBatch: 30,
   remoteLmbda: 'https://7tknlfte8j.execute-api.us-west-1.amazonaws.com',
 }
 
