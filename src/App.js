@@ -51,16 +51,16 @@ const App = () => {
     return doneImgsCount !== 0 && ((doneImgsCount + 1) % Constants.imagesPerBatch === 0)
   }
 
-  function moveNextImage(){
+  function moveNextImage() {
     setCurrImg(getNextImage())
   }
-  
+
   function getNextImage() {
-    const randomResult = Math.random() < 0.5    
-    if (currMachineIdx < machineImages.length && ((currHumanIdx === humanImages.length - 1) || randomResult)){ 
+    const randomResult = Math.random() < 0.5
+    if (currMachineIdx < machineImages.length && ((currHumanIdx === humanImages.length - 1) || randomResult)) {
       setCurrMachineIdx(previousValue => ++previousValue)
       return machineImages[currMachineIdx]
-    } else{
+    } else {
       setCurrHumanIdx(previousValue => ++previousValue)
       return humanImages[currHumanIdx]
     }
@@ -69,7 +69,7 @@ const App = () => {
   function changeImage() {
     setIsTimerActive(true)
     setIsBatchFinished(false)
-    
+
     return new Promise(res => setTimeout(function () {
       setIsDalle(false)
       setDoneImgsCount(previousValue => ++previousValue)
@@ -159,7 +159,7 @@ const App = () => {
 
   function getImagesLeftCount() {
     // check if last batch
-    if ( (totalImgCount - doneImgsCount < Constants.imagesPerBatch) && (totalImgCount % Constants.imagesPerBatch !== 0) ){
+    if ((totalImgCount - doneImgsCount < Constants.imagesPerBatch) && (totalImgCount % Constants.imagesPerBatch !== 0)) {
       return totalImgCount % Constants.imagesPerBatch
     }
 
