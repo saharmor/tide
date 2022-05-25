@@ -113,7 +113,7 @@ const App = () => {
       setIsCorrect(false)
     }
 
-    if (currImg["on"] in ["DALL-E 2","Imagen"]) {
+    if (currImg["on"] === "DALL-E 2" ||  currImg["on"] === "Imagen") {
       setIsDalleOrImagen(true)
     }
     await changeImage()
