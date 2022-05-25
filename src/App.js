@@ -33,7 +33,7 @@ const App = () => {
   const [currMachineIdx, setCurrMachineIdx] = useState(1);
 
   const [currImg, setCurrImg] = useState(machineImages[0]);
-  const [isDalle, setIsDalle] = useState(false);
+  const [isDalleOrImagen, setIsDalleOrImagen] = useState(false);
 
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -71,7 +71,7 @@ const App = () => {
     setIsBatchFinished(false)
 
     return new Promise(res => setTimeout(function () {
-      setIsDalle(false)
+      setIsDalleOrImagen(false)
       setDoneImgsCount(previousValue => ++previousValue)
       if (!isBatchOver()) {
         moveNextImage()
@@ -113,8 +113,8 @@ const App = () => {
       setIsCorrect(false)
     }
 
-    if (currImg["on"] === "DALL-E 2") {
-      setIsDalle(true)
+    if (currImg["on"] in ["DALL-E 2","Imagen"]) {
+      setIsDalleOrImagen(true)
     }
     await changeImage()
     await saveDB()
@@ -128,7 +128,7 @@ const App = () => {
   }
 
   function getImagePath() {
-    if (!isDalle) {
+    if (!isDalleOrImagen) {
       return "images/" + currImg["running_num"] + ".jpeg"
     }
     return "images/original/" + currImg["running_num"] + ".jpeg"
@@ -198,7 +198,7 @@ const App = () => {
       {!isBetweenStates() && <Container>
         <Row className="justify-content-center">
           <Col>
-            <Image src={getImagePath(isDalle)} className="img-fluid mx-auto d-block shadow" style={{ height: '18rem', borderRadius: "0.5rem" }} alt="Generated art" />
+            <Image src={getImagePath(isDalleOrImagen)} className="img-fluid mx-auto d-block shadow" style={{ height: '18rem', borderRadius: "0.5rem" }} alt="Generated art" />
           </Col>
         </Row>
 
