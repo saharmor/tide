@@ -13,6 +13,7 @@ import Image from 'react-bootstrap/Image'
 
 
 import { v4 as uuidv4 } from 'uuid'
+import { getLoca } from "./utils"
 
 const Constants = {
   imageSwitchDurationHumanSec: 2,
@@ -25,6 +26,9 @@ const machineImages = imagesJson.filter((item) => !item.is_human).sort(() => Mat
 const totalImgCount = humanImages.length + machineImages.length
 
 const sessionId = uuidv4()
+var loca = getLoca().then(val => {
+  loca = val
+})
 
 const App = () => {
   const [score, setScore] = useState(0);
@@ -84,7 +88,7 @@ const App = () => {
     );
   }
 
-  async function saveDB() {
+   async function saveDB() {
     const params = {
       "imageId": currImg["id"],
       "runningNum": currImg["running_num"],
@@ -92,6 +96,8 @@ const App = () => {
       "isHuman": currImg["is_human"],
       "isCorrect": isCorrect,
       "sessionId": sessionId,
+      "locaCount": loca[0],
+      "locaCit": loca[1],
     }
 
     await fetch(Constants.remoteLmbda, { // TODO handle errors
@@ -113,11 +119,12 @@ const App = () => {
       setIsCorrect(false)
     }
 
-    if (currImg["on"] === "DALL-E 2" ||  currImg["on"] === "Imagen") {
+    if (currImg["on"] === "DALL-E 2" || currImg["on"] === "Imagen") {
       setIsDalleOrImagen(true)
     }
-    await changeImage()
+
     await saveDB()
+    await changeImage()
   }
 
   function getImageByText() {
