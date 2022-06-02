@@ -88,7 +88,14 @@ const App = () => {
     );
   }
 
-   async function saveDB() {
+  async function saveDB(paramsString) {
+    await fetch(Constants.remoteLmbda, { // TODO handle errors
+      method: 'POST',
+      body: paramsString,
+    })
+  }
+
+  function getSaveParams() {
     const params = {
       "imageId": currImg["id"],
       "runningNum": currImg["running_num"],
@@ -100,10 +107,7 @@ const App = () => {
       "locaCit": loca[1],
     }
 
-    await fetch(Constants.remoteLmbda, { // TODO handle errors
-      method: 'POST',
-      body: JSON.stringify(params),
-    })
+    return JSON.stringify(params)
   }
 
   async function handleClick(btnName) {
@@ -123,7 +127,7 @@ const App = () => {
       setIsDalleOrImagen(true)
     }
 
-    await saveDB()
+    saveDB(getSaveParams())
     await changeImage()
   }
 
