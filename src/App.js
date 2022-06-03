@@ -11,9 +11,9 @@ import Col from 'react-bootstrap/Col'
 import Button from 'react-bootstrap/Button'
 import Image from 'react-bootstrap/Image'
 
-
 import { v4 as uuidv4 } from 'uuid'
-import { getLoca } from "./utils"
+import { getLoca, trackEvent } from "./utils"
+import ReactGA from 'react-ga4'
 
 const Constants = {
   imageSwitchDurationHumanSec: 2,
@@ -30,6 +30,14 @@ var loca = getLoca().then(val => {
   loca = val
 })
 
+ReactGA.initialize('G-38F95VBLHV', {
+  titleCase: false,
+  gaOptions: {
+    userId: sessionId
+  }
+});
+ReactGA.send("pageview");
+
 const App = () => {
   const [score, setScore] = useState(0);
   const [doneImgsCount, setDoneImgsCount] = useState(0);
@@ -42,6 +50,7 @@ const App = () => {
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [isBatchFinished, setIsBatchFinished] = useState(false);
+
 
   function getImageSwitchDuration() {
     if (isBetweenStates()) {
@@ -70,16 +79,20 @@ const App = () => {
     }
   }
 
-  function changeImage() {
+  function changeImage(isAnswerCorrect) {
     setIsTimerActive(true)
     setIsBatchFinished(false)
 
-    return new Promise(res => setTimeout(function () {
+    return new Promise(() => setTimeout(function () {
       setIsDalleOrImagen(false)
       setDoneImgsCount(previousValue => ++previousValue)
       if (!isBatchOver()) {
         moveNextImage()
       } else {
+        if (isAnswerCorrect) {
+          trackEvent('gameplay', 'finished_batch', sessionId, score + 1)
+        }
+        trackEvent('gameplay', 'finished_batch', sessionId, score)
         setIsBatchFinished(true)
       }
       setIsCorrect(false)
@@ -115,12 +128,15 @@ const App = () => {
       return
     }
 
-    if ((currImg["is_human"] && btnName === "human") || (!currImg["is_human"] && btnName === "robot")) {
+    const isAnswerCorrect = (currImg["is_human"] && btnName === "human") || (!currImg["is_human"] && btnName === "robot")
+    if (isAnswerCorrect) {
       // correct
       setScore(previousValue => ++previousValue)
       setIsCorrect(true)
+      trackEvent('gameplay', 'choice_correct', currImg["id"])
     } else {
       setIsCorrect(false)
+      trackEvent('gameplay', 'choice_wrong', currImg["id"])
     }
 
     if (currImg["on"] === "DALL-E 2" || currImg["on"] === "Imagen") {
@@ -128,7 +144,7 @@ const App = () => {
     }
 
     saveDB(getSaveParams())
-    await changeImage()
+    await changeImage(isAnswerCorrect)
   }
 
   function getImageByText() {
@@ -155,6 +171,7 @@ const App = () => {
   }
 
   function playAgain() {
+    trackEvent('gameplay', 'play_again', sessionId)
     moveNextImage()
     setIsBatchFinished(false)
     setScore(0)
