@@ -41,7 +41,7 @@ const DoneScreen = ({ isFinishedAll, score, playAgain, emailUrl, sessionId }) =>
         {!isEmailSubmitted &&
           <>
             <Col xs={12} className="justify-content-center align-items-center d-flex">
-              <Form.Label htmlFor="email" className="text-muted">Know about new images and updates</Form.Label>
+              <Form.Label htmlFor="email" className="text-muted">Know about new images and models. No spam!</Form.Label>
             </Col>
             <Col xs={6} className="flex-grow-1 align-items-center">
               <Form className="justify-content-center" onSubmit={handleSubmit}>
