@@ -18,6 +18,12 @@ body {
     line-height: normal;
 }
 
+.btn-large {
+    font-size: 1.2rem;
+    line-height: normal;
+}
+
+
 .btn:focus {
     box-shadow: none;
 }
