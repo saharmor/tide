@@ -28,7 +28,7 @@ const DoneScreen = ({ isFinishedAll, score, playAgain, emailUrl, sessionId }) =>
           <Button className="btn-large" variant="primary" onClick={() => openInNewTab('https://donate.stripe.com/fZe8yB4Ip7hnaXu6oo')}>Donate <span role="img" aria-label="heart">❤️</span></Button>
         </Col>
         {!isFinishedAll && <Col xs={12} className="pt-2">
-          <Button className="btn-large" variant="primary" onClick={playAgain}>Play again with new images</Button>
+          <Button className="btn-large" variant="outline-primary" onClick={playAgain}>Play again with new images</Button>
         </Col>
         }
       </Row>
